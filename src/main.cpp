@@ -17,11 +17,13 @@
 
 #define INERTIAL_PORT 21
 
-#define UPPER_INTAKE_PORT 1
-#define LOWER_INTAKE_PORT 3
-#define BASKET_PORT 15
+#define INTAKE_PORT 1
+#define SCISSORS_PORT1 13
+#define SCISSORS_PORT2 12
+//#define BASKET_PORT 17
 
-#define EXTENSION_PORT 'a'
+#define BOB_PORT 'a'
+#define JEFF_PORT 'b'
 
 // #define ROTATION_PORT 5
 // #define ELEVATOR_PORT 19
@@ -35,19 +37,27 @@ pros::MotorGroup LeftDriveSmart({LEFT_MOTOR_A_PORT, LEFT_MOTOR_B_PORT, LEFT_MOTO
 pros::MotorGroup RightDriveSmart({RIGHT_MOTOR_A_PORT, RIGHT_MOTOR_B_PORT, RIGHT_MOTOR_C_PORT}); // Creates a motor group with forwards port 2 and reversed port 4 and 7
 pros::Imu Inertial(INERTIAL_PORT);
 pros::MotorGroup smartdrive({LEFT_MOTOR_A_PORT, LEFT_MOTOR_B_PORT, -LEFT_MOTOR_C_PORT, RIGHT_MOTOR_A_PORT, RIGHT_MOTOR_B_PORT, -RIGHT_MOTOR_C_PORT});
-pros::Motor Upper_Intake = UPPER_INTAKE_PORT;
-pros::Motor Lower_Intake = LOWER_INTAKE_PORT;
-pros::Motor Basket = BASKET_PORT;
+pros::Motor Intake = INTAKE_PORT;
+pros::MotorGroup Scissors ({SCISSORS_PORT1, SCISSORS_PORT2});
+// pros::Motor Basket = -BASKET_PORT;
 
-pros::ADIDigitalOut Extension({EXTENSION_PORT});
+pros::ADIDigitalOut Bob({BOB_PORT});
+pros::ADIDigitalOut Jeff({JEFF_PORT});
 
-bool extensionState = false;
+bool bobState = false;
+bool jeffState = false;
 
-void ToggleExtension()
+void ToggleBob()
 {
-	extensionState = !extensionState;	 // Toggle the state
-	Extension.set_value(extensionState); // Update the digital output
+	bobState = !bobState;	 // Toggle the state
+	Bob.set_value(bobState); // Update the digital output
 	pros::delay(200);					 // Delay for debouncing
+}
+void ToggleJeff()
+{
+	jeffState = !jeffState;
+	Jeff.set_value(jeffState);
+	pros::delay(200);
 }
 /**
  * A callback function for LLEMU's centerk button.
@@ -348,10 +358,11 @@ void opcontrol()
 		// Control Clamp and Flag using buttons
 		if (Controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X))
 		{
-			ToggleExtension();
+			ToggleBob();
 		}
 		if (Controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
 		{
+			ToggleJeff();
 		}
 		if (Controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
 		{
@@ -367,39 +378,37 @@ void opcontrol()
 		// Control Intake using shoulder buttons (L1/L2)
 		if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
 		{
-			Lower_Intake.move_velocity(200);
-			Upper_Intake.move_velocity(200);
-			Basket.move_velocity(200);
+			// Lower_Intake.move_velocity(200);
+			// Upper_Intake.move_velocity(200);
+			// Basket.move_velocity(-200);
+			Scissors.move_velocity(200);
 		}
 		else if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 		{
-			Lower_Intake.move_velocity(-200);
-			Basket.move_velocity(-200);
+			// Lower_Intake.move_velocity(-200);
+			// Basket.move_velocity(200);
+			Scissors.move_velocity(-200);
 		}
-		else
+		else if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
 		{
-			Lower_Intake.move_velocity(0);
-			Upper_Intake.move_velocity(0);
-			Basket.move_velocity(0);
-		}
-
-		if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-		{
-			Lower_Intake.move_velocity(200);
-			Upper_Intake.move_velocity(-200);
-			Basket.move_velocity(-200);
+			// Lower_Intake.move_velocity(200);
+			// Upper_Intake.move_velocity(-200);
+			// Basket.move_velocity(-200);
+			Intake.move_velocity(200);
 		}
 		else if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
-			Lower_Intake.move_velocity(200);
-			Upper_Intake.move_velocity(200);
-			Basket.move_velocity(-200);
+			// Lower_Intake.move_velocity(200);
+			// Upper_Intake.move_velocity(200);
+			// Basket.move_velocity(-200);
+			Intake.move_velocity(-200);
 		}
 		else
 		{
-			Lower_Intake.move_velocity(0);
-			Upper_Intake.move_velocity(0);
-			Basket.move_velocity(0);
+			// Lower_Intake.move_velocity(0);
+			// Upper_Intake.move_velocity(0);
+			// Basket.move_velocity(0);
+			Scissors.move_velocity(0);
 		}
 
 		// Delay to prevent CPU overload
