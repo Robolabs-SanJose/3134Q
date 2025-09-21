@@ -7,19 +7,19 @@
 // R2 will score onto the higher side goals
 // X will expand the piston to take the balls out of the tube
 // Y will retract the piston
-#define LEFT_MOTOR_A_PORT 4
-#define LEFT_MOTOR_B_PORT 5
-#define LEFT_MOTOR_C_PORT 6
+#define LEFT_MOTOR_A_PORT 14
+#define LEFT_MOTOR_B_PORT 15
+#define LEFT_MOTOR_C_PORT 16
 
-#define RIGHT_MOTOR_A_PORT 7
-#define RIGHT_MOTOR_B_PORT 8
-#define RIGHT_MOTOR_C_PORT 9
+#define RIGHT_MOTOR_A_PORT 3
+#define RIGHT_MOTOR_B_PORT 4
+#define RIGHT_MOTOR_C_PORT 5
 
 #define INERTIAL_PORT 21
 
-#define INTAKE_PORT 1
-#define SCISSORS_PORT1 13
-#define SCISSORS_PORT2 12
+#define LOWWERROLLER_PORT 2
+#define UPPERROLLER_PORT 13
+#define MIDDLEROLLER_PORT 12
 //#define BASKET_PORT 17
 
 #define BOB_PORT 'a'
@@ -37,9 +37,9 @@ pros::MotorGroup LeftDriveSmart({LEFT_MOTOR_A_PORT, LEFT_MOTOR_B_PORT, LEFT_MOTO
 pros::MotorGroup RightDriveSmart({RIGHT_MOTOR_A_PORT, RIGHT_MOTOR_B_PORT, RIGHT_MOTOR_C_PORT}); // Creates a motor group with forwards port 2 and reversed port 4 and 7
 pros::Imu Inertial(INERTIAL_PORT);
 pros::MotorGroup smartdrive({LEFT_MOTOR_A_PORT, LEFT_MOTOR_B_PORT, -LEFT_MOTOR_C_PORT, RIGHT_MOTOR_A_PORT, RIGHT_MOTOR_B_PORT, -RIGHT_MOTOR_C_PORT});
-pros::Motor Intake = INTAKE_PORT;
-pros::MotorGroup Scissors ({SCISSORS_PORT1, SCISSORS_PORT2});
-// pros::Motor Basket = -BASKET_PORT;
+pros::MotorGroup Intake({UPPERROLLER_PORT,MIDDLEROLLER_PORT,-LOWWERROLLER_PORT});
+pros::MotorGroup Outtake({-UPPERROLLER_PORT,-MIDDLEROLLER_PORT,LOWWERROLLER_PORT});
+pros::MotorGroup ScoreMiddle({UPPERROLLER_PORT,-MIDDLEROLLER_PORT,-LOWWERROLLER_PORT});
 
 pros::ADIDigitalOut Bob({BOB_PORT});
 pros::ADIDigitalOut Jeff({JEFF_PORT});
@@ -47,7 +47,7 @@ pros::ADIDigitalOut Jeff({JEFF_PORT});
 bool bobState = false;
 bool jeffState = false;
 
-void ToggleBob()
+void ToggleBob() // scorring pistens
 {
 	bobState = !bobState;	 // Toggle the state
 	Bob.set_value(bobState); // Update the digital output
@@ -240,76 +240,8 @@ void turn(int speed, int dir)
 
 void autonomous()
 {
-	// Redright;
+	
 }
-
-// void Redright()
-// {
-// 	// to turn 90 degrees use pros delay for about 490
-
-// 	// intakes 3 balls and should stop when color sensor is no longer the right color
-// 	Intake.move_velocity(200);
-// 	pros::delay(1000);
-// 	Intake.move_velocity(0);
-
-// 	pros::delay(100);
-
-// 	RightDriveSmart.move_velocity(80);
-// 	LeftDriveSmart.move_velocity(-80);
-// 	pros::delay(300);
-// 	RightDriveSmart.move_velocity(0);
-// 	LeftDriveSmart.move_velocity(0);
-
-// 	pros::delay(100);
-
-// 	// the trun twords the lower goal
-// 	RightDriveSmart.move_velocity(80);
-// 	LeftDriveSmart.move_velocity(80);
-// 	pros::delay(700);
-// 	RightDriveSmart.move_velocity(0);
-// 	LeftDriveSmart.move_velocity(0);
-
-// 	pros::delay(100);
-
-// 	RightDriveSmart.move_velocity(-80);
-// 	LeftDriveSmart.move_velocity(80);
-// 	Intake.move_velocity(200);
-// 	pros::delay(400);
-// 	RightDriveSmart.move_velocity(0);
-// 	LeftDriveSmart.move_velocity(0);
-// 	Intake.move_velocity(0);
-
-// 	pros::delay(100);
-
-// 	Intake.move_velocity(-200);
-// 	pros::delay(200);
-// 	Intake.move_velocity(0);
-
-// 	RightDriveSmart.move_velocity(80);
-// 	LeftDriveSmart.move_velocity(-80);
-// 	pros::delay(300);
-// 	RightDriveSmart.move_velocity(0);
-// 	LeftDriveSmart.move_velocity(0);
-
-// 	//truns to score on the highest goal
-// 	RightDriveSmart.move_velocity(80);
-// 	LeftDriveSmart.move_velocity(80);
-// 	pros::delay(230);
-// 	RightDriveSmart.move_velocity(0);
-// 	LeftDriveSmart.move_velocity(0);
-
-// 	pros::delay(100);
-
-// 	RightDriveSmart.move_velocity(80);
-// 	LeftDriveSmart.move_velocity(-80);
-// 	pros::delay(300);
-// 	RightDriveSmart.move_velocity(0);
-// 	LeftDriveSmart.move_velocity(0);
-
-// 	Intake.move_velocity(200);
-// 	pros::delay(1000);
-// 	Intake.move_velocity(0);
-// }
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -366,49 +298,32 @@ void opcontrol()
 		}
 		if (Controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
 		{
-			// scoreHighStakes();
 		}
 		if (Controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
 		{
-			// HighStakes.move_velocity(100);
-			// pros::delay(200);
-			// HighStakes.move_velocity(0);
 		}
 
 		// Control Intake using shoulder buttons (L1/L2)
 		if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
 		{
-			// Lower_Intake.move_velocity(200);
-			// Upper_Intake.move_velocity(200);
-			// Basket.move_velocity(-200);
-			Scissors.move_velocity(200);
+			ScoreMiddle.move_velocity(200);
 		}
 		else if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 		{
-			// Lower_Intake.move_velocity(-200);
-			// Basket.move_velocity(200);
-			Scissors.move_velocity(-200);
 		}
 		else if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
 		{
-			// Lower_Intake.move_velocity(200);
-			// Upper_Intake.move_velocity(-200);
-			// Basket.move_velocity(-200);
 			Intake.move_velocity(200);
 		}
 		else if (Controller1.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
-			// Lower_Intake.move_velocity(200);
-			// Upper_Intake.move_velocity(200);
-			// Basket.move_velocity(-200);
-			Intake.move_velocity(-200);
+			Outtake.move_velocity(200);
 		}
 		else
 		{
-			// Lower_Intake.move_velocity(0);
-			// Upper_Intake.move_velocity(0);
-			// Basket.move_velocity(0);
-			Scissors.move_velocity(0);
+			Intake.move_velocity(0);
+			ScoreMiddle.move_velocity(0);
+			Outtake.move_velocity(0);
 		}
 
 		// Delay to prevent CPU overload
