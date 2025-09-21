@@ -7,19 +7,19 @@
 // R2 will score onto the higher side goals
 // X will expand the piston to take the balls out of the tube
 // Y will retract the piston
-#define LEFT_MOTOR_A_PORT 14
-#define LEFT_MOTOR_B_PORT 15
-#define LEFT_MOTOR_C_PORT 16
+#define LEFT_MOTOR_A_PORT 1
+#define LEFT_MOTOR_B_PORT 2
+#define LEFT_MOTOR_C_PORT 3
 
-#define RIGHT_MOTOR_A_PORT 3
-#define RIGHT_MOTOR_B_PORT 4
-#define RIGHT_MOTOR_C_PORT 5
+#define RIGHT_MOTOR_A_PORT 6
+#define RIGHT_MOTOR_B_PORT 9
+#define RIGHT_MOTOR_C_PORT 4
 
 #define INERTIAL_PORT 21
 
-#define LOWWERROLLER_PORT 2
-#define UPPERROLLER_PORT 13
-#define MIDDLEROLLER_PORT 12
+#define LOWWERROLLER_PORT 7
+#define UPPERROLLER_PORT 10
+#define MIDDLEROLLER_PORT 5
 //#define BASKET_PORT 17
 
 #define BOB_PORT 'a'
